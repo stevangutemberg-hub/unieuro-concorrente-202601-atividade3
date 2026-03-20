@@ -131,7 +131,7 @@ Preencha a tabela abaixo utilizando os tempos medidos.
 Construa um gráfico mostrando o **tempo de execução em função do número de threads/processos**.
 
 
-![Gráfico Tempo Execução](graficos/tempo_execucao.png)
+![Gráfico Tempo Execução](graficos/tempo.png)
 
 ---
 
@@ -139,13 +139,6 @@ Construa um gráfico mostrando o **tempo de execução em função do número de
 
 Construa um gráfico mostrando o **speedup obtido**.
 
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: speedup
-* Incluir também a **linha de speedup ideal (linear)** para comparação
-
-Inserir o gráfico abaixo:
 
 ![Gráfico Speedup](graficos/speedup.png)
 
