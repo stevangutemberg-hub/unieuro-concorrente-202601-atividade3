@@ -1,7 +1,6 @@
 import os
 import time
-import random
-import string
+import multiprocessing
 
 
 # ===============================
@@ -40,7 +39,7 @@ def consolidar_resultados(resultados):
 # ===============================
 
 def processar_arquivo(caminho):
-    with open(caminho, "r", encoding="utf-8") as f:
+    with open(caminho, "r", encoding="utf-8", errors="ignore") as f:
         conteudo = f.readlines()
 
     total_linhas = len(conteudo)
@@ -75,9 +74,8 @@ def processar_arquivo(caminho):
     }
 
 
-
 # ===============================
-# Execução serial
+# EXECUÇÃO SERIAL
 # ===============================
 
 def executar_serial(pasta):
@@ -86,18 +84,60 @@ def executar_serial(pasta):
     inicio = time.time()
 
     for arquivo in os.listdir(pasta):
-        caminho = os.path.join(pasta, arquivo)
-
-        resultado = processar_arquivo(caminho)
-        resultados.append(resultado)
+        if arquivo.endswith(".txt"):
+            caminho = os.path.join(pasta, arquivo)
+            resultados.append(processar_arquivo(caminho))
 
     fim = time.time()
 
     resumo = consolidar_resultados(resultados)
 
     print("\n=== EXECUÇÃO SERIAL ===")
-    print(f"Arquivos processados: {len(resultados)}")
     print(f"Tempo total: {fim - inicio:.4f} segundos")
+
+    return fim - inicio, resumo
+
+
+# ===============================
+# EXECUÇÃO PARALELA (POOL)
+# ===============================
+
+def executar_paralelo(pasta, n_processos):
+
+    arquivos = [
+        os.path.join(pasta, f)
+        for f in os.listdir(pasta)
+        if f.endswith(".txt")
+    ]
+
+    inicio = time.time()
+
+    with multiprocessing.Pool(processes=n_processos) as pool:
+        resultados = pool.map(processar_arquivo, arquivos)
+
+    fim = time.time()
+
+    resumo = consolidar_resultados(resultados)
+
+    print(f"\n=== PARALELO ({n_processos} processos) ===")
+    print(f"Tempo total: {fim - inicio:.4f} segundos")
+
+    return fim - inicio, resumo
+
+
+# ===============================
+# MAIN
+# ===============================
+
+if __name__ == "__main__":
+
+    pasta = "log2"
+
+    tempos = {}
+
+    # SERIAL
+    t1, resumo = executar_serial(pasta)
+    tempos[1] = t1
 
     print("\n=== RESULTADO CONSOLIDADO ===")
     print(f"Total de linhas: {resumo['linhas']}")
@@ -106,17 +146,20 @@ def executar_serial(pasta):
 
     print("\nContagem de palavras-chave:")
     for k, v in resumo["contagem"].items():
-        print(f"  {k}: {v}")
+        print(f"{k}: {v}")
 
-    return resumo
+    # PARALELO
+    for p in [2, 4, 8, 12]:
+        tp, _ = executar_paralelo(pasta, p)
+        tempos[p] = tp
 
+    # TABELA FINAL
+    print("\n=== TABELA FINAL ===")
+    print("Proc | Tempo | Speedup | Eficiência")
 
-# ===============================
-# Main
-# ===============================
+    for p in [1, 2, 4, 8, 12]:
+        tempo = tempos[p]
+        speedup = tempos[1] / tempo
+        eficiencia = speedup / p
 
-if __name__ == "__main__":
-    pasta = "log2"
-
-    print("Executando versão serial...")
-    executar_serial(pasta)
+        print(f"{p:4} | {tempo:.4f} | {speedup:.2f} | {eficiencia:.2f}")
