@@ -131,7 +131,7 @@ Preencha a tabela abaixo utilizando os tempos medidos.
 Construa um gráfico mostrando o **tempo de execução em função do número de threads/processos**.
 
 
-![Gráfico Tempo Execução](graficos/tempo.png)
+![Gráfico Tempo Execução](graficomeu/tempo.png)
 
 ---
 
@@ -140,7 +140,7 @@ Construa um gráfico mostrando o **tempo de execução em função do número de
 Construa um gráfico mostrando o **speedup obtido**.
 
 
-![Gráfico Speedup](graficos/speedup.png)
+![Gráfico Speedup](graficomeu/speedup.png)
 
 ---
 
@@ -156,7 +156,7 @@ Construa um gráfico mostrando a **eficiência da paralelização**.
 
 Inserir o gráfico abaixo:
 
-![Gráfico Eficiência](graficos/eficiencia.png)
+![Gráfico Eficiência](graficomeu/eficiencia.png)
 
 ---
 
